@@ -3,20 +3,11 @@ from phone_field import PhoneField
 
 # Create your models here.
 DESIGNATION = (
-    ('PYTHON TEAM LEADER', 'python team leader'),
-    ('PYTHON SENIOR DEV', 'python senior developer'),
-    ('PYTHON JUNIOR DEV', 'python junior developer'),
-    ('PYTHON TRAINEE DEV', 'python trainee developer'),
+    ('1', ' team leader'),
+    ('2', ' senior developer'),
+    ('3', ' junior developer'),
+    ('4', ' trainee developer'),
 
-    ('ROR TEAM LEADER', 'ror team leader'),
-    ('ROR SENIOR DEV', ' ror senior developer'),
-    ('ROR JUNIOR DEV', 'ror junior developer'),
-    ('ROR TRAINEE DEV', 'ror trainee developer'),
-
-    ('FRONTEND TEAM LEADER', 'frontend team leader'),
-    ('FRONTEND SENIOR DEV', 'frontend senior developer'),
-    ('FRONTEND JUNIOR DEV', 'frontend junior developer'),
-    ('FRONTEND TRAINEE DEV', 'frontend trainee developer'),
 )
 
 
@@ -41,7 +32,7 @@ class Employee(models.Model):
         return self.name
 
 
-class Schedule(models.Model):
+class ToolsIssue(models.Model):
     empName = models.ForeignKey(Employee, on_delete=models.CASCADE)
     techTool = models.ForeignKey(TechTool, on_delete=models.CASCADE)
     borrowTime = models.DateTimeField(auto_now_add=True)

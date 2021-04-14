@@ -4,11 +4,8 @@ from django.views import View
 from .models import *
 
 
-def index(request):
-    return HttpResponse("tech Box")
-
-
 class AddEmployees(View):
+
     def get(self, request):
         print(DESIGNATION)
         designations = []
