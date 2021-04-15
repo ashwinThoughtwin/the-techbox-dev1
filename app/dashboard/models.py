@@ -13,7 +13,6 @@ DESIGNATION = (
 
 class TechTool(models.Model):
     name = models.CharField(max_length=200)
-    quantity = models.IntegerField(default=0)
     status = models.BooleanField(default=True)
 
     def __str__(self):
