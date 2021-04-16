@@ -6,8 +6,7 @@ DESIGNATION = (
     ('1', ' team leader'),
     ('2', ' senior developer'),
     ('3', ' junior developer'),
-    ('4', ' trainee developer'),
-
+    ('4', ' trainee developer')
 )
 
 

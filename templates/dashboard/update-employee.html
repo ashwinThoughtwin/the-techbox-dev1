@@ -109,9 +109,7 @@
                                     <label class="col-lg-3 col-form-label form-control-label">Designation</label>
                                     <div class="col-lg-9">
                                         <select class="form-control" id="user_time_zone" size="0" name="designation">
-                                            <option>
-                                                 value="{{ employee.designation }}"
-
+                                            <option>"{{ employee.designation }}"
                                             </option>
                                             {% for d in  designations %}
                                                 <option value="{{ d }}">
