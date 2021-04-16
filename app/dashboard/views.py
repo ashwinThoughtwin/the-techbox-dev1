@@ -48,11 +48,11 @@ class DashBoard(View):
         if trainee > 0:
             data['assigned_to_trainee'] = ((trainee * 100) / issuedcount)
         if jd > 0:
-            data['assigned_to_jd'] += ((jd * 100) / issuedcount)
+            data['assigned_to_jd'] += ((jd * 100) // issuedcount)
         if sd > 0:
-            data['assigned_to_sd'] += ((sd * 100) / issuedcount)
+            data['assigned_to_sd'] += ((sd * 100) // issuedcount)
         if tl > 0:
-            data['assigned_to_tl'] += ((tl * 100) / issuedcount)
+            data['assigned_to_tl'] += ((tl * 100) // issuedcount)
 
         return render(request, 'dashboard/dashboard.html', data)
 
