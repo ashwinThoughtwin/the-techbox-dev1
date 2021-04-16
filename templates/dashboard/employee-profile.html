@@ -75,8 +75,8 @@
 
                       <p class="text-secondary mb-1">{{ employee.designation }}</p>
                       <p class="text-muted font-size-sm">{{ employee.address }}</p>
-                            <a href="{% url 'update' employee.id %}"><button class="btn btn-warning">Update</button></a>
-                       <a href="{% url 'emp_delete' employee.id %}"><button class="btn btn-outline-danger">Remove</button></a>
+                            <a href="{% url 'update_employee' employee.id %}"><button class="btn btn-warning">Update</button></a>
+                       <a href="{% url 'delete_employee' employee.id %}"><button class="btn btn-outline-danger">Remove</button></a>
 
                     </div>
                   </div>

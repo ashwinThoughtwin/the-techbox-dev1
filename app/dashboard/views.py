@@ -5,7 +5,117 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-from django.views.generic import  UpdateView
+from django.views.generic import UpdateView
+
+
+class DashBoard(View):
+
+    @method_decorator(login_required(login_url="/login/"))
+    def get(self, request):
+        data = {}
+        employees = Employee.objects.all()
+        data['employees'] = employees
+        tools = TechTool.objects.all()
+        data['numberofemp'] = employees.count()
+        data['numberoftools'] = tools.count()
+        issued_tools = ToolsIssue.objects.all()
+        data['issued_tools'] = issued_tools
+        data['tools'] = tools
+
+        trainee = 0
+        tl = 0
+        jd = 0
+        sd = 0
+        data['assigned_to_tl']=0
+        data['assigned_to_sd']=0
+        data['assigned_to_jd']=0
+        data['assigned_to_trainee']=0
+        issuedcount = issued_tools.count()
+
+        for i in issued_tools:
+            if i.empName.designation == ' team leader':
+                tl += 1
+
+            elif i.empName.designation == ' senior developer':
+                sd += 1
+
+            elif i.empName.designation == ' junior developer':
+                jd += 1
+
+            elif i.empName.designation == ' trainee developer':
+                trainee += 1
+
+        if trainee > 0:
+            data['assigned_to_trainee'] = ((trainee * 100) / issuedcount)
+        if jd > 0:
+            data['assigned_to_jd'] += ((jd * 100) / issuedcount)
+        if sd > 0:
+            data['assigned_to_sd'] += ((sd * 100) / issuedcount)
+        if tl > 0:
+            data['assigned_to_tl'] += ((tl * 100) / issuedcount)
+
+        return render(request, 'dashboard/dashboard.html', data)
+
+
+class AddTechTools(View):
+
+    def post(self, request):
+        name = request.POST.get('name')
+        TechTool.objects.create(name=name)
+        return redirect("techtool_list")
+
+    def get(self, request):
+        return render(request, 'dashboard/techtool_add.html')
+
+
+class TechToolList(View):
+
+    @method_decorator(login_required(login_url="/login/"))
+    def get(self, request):
+        data = {}
+        tools = TechTool.objects.all()
+        data['tools'] = tools
+        return render(request, 'dashboard/techtool-list.html', data)
+
+
+class UpdateTechTools(View):
+
+    def post(self, request, pk):
+        tool = TechTool.objects.get(id=pk)
+        tool.name = request.POST.get('name')
+
+        status = request.POST.get('status')
+        if status == 'Yes':
+            tool.status = True
+            tool.save()
+
+        else:
+            print(status)
+            tool.status = False
+            tool.save()
+
+        print(request.POST)
+        # tool.save()
+
+        return redirect("techtool_list")
+
+    def get(self, request, pk):
+        tool = TechTool.objects.get(id=pk)
+
+        return render(request, 'dashboard/update-tool.html', {'tool': tool})
+
+
+class DeleteTechTools(View):
+
+    def get(self, request, pk):
+        tool = TechTool.objects.get(id=pk)
+
+        tool.delete()
+
+        return redirect("techtool_list")
+
+
+# Employee views
 
 
 class AddEmployees(View):
@@ -39,28 +149,6 @@ class AddEmployees(View):
         return render(request, 'dashboard/add-employee.html')
 
 
-class AddTechTools(View):
-
-    def post(self, request):
-        name = request.POST.get('name')
-        TechTool.objects.create(name=name)
-        return HttpResponse("created")
-
-    def get(self, request):
-        return render(request, 'dashboard/techtool_add.html')
-
-
-class AddTechTools(View):
-
-    def post(self, request):
-        name = request.POST.get('name')
-        TechTool.objects.create(name=name)
-        return HttpResponse("created")
-
-    def get(self, request):
-        return render(request, 'dashboard/techtool_add.html')
-
-
 class EmployeeList(View):
 
     @method_decorator(login_required(login_url="/login/"))
@@ -75,30 +163,47 @@ class EmployeeList(View):
 class EmployeeDetail(View):
 
     @method_decorator(login_required(login_url="/login/"))
-    def get(self, request,pk):
+    def get(self, request, pk):
         data = {}
         employee = Employee.objects.get(pk=pk)
         data['employee'] = employee
 
         return render(request, 'dashboard/employee-profile.html', data)
 
-class EmployeeUpdate(UpdateView):
-    model = Employee
-    template_name = 'dashboard/add-employee.html'
-    # context_object_name = 'update_form'
-    fields = ('name','designation','address','email','mobile','date_of_birth')
-    success_url = '/dashboard/'
 
-#     need to work
+class EmployeeUpdate(View):
 
+    def get(self, request, pk):
+        employee = Employee.objects.get(id=pk)
 
+        print(DESIGNATION)
+        designations = []
+        for d in DESIGNATION:
+            designations.append(d[1])
+        return render(request, 'dashboard/update-employee.html', {'designations': designations, 'employee': employee})
 
+    @method_decorator(login_required(login_url="/login/"))
+    def post(self, request, pk):
+        employee = Employee.objects.get(id=pk)
+        designations = []
+        for d in DESIGNATION:
+            designations.append(d[1])
+        employee.name = request.POST.get('name')
+        employee.designation = request.POST.get('designation')
+        employee.address = request.POST.get('address')
+        employee.mobile = request.POST.get('mobile')
+        employee.email = request.POST.get('email')
+        employee.date_of_birth = request.POST.get('dob')
+        print(request.POST)
+        employee.save()
+
+        return redirect('employee_list')
 
 
 class EmployeeDelete(View):
 
     @method_decorator(login_required(login_url="/login/"))
-    def get(self, request,pk):
+    def get(self, request, pk):
         data = {}
         employee = Employee.objects.get(pk=pk)
         employee.delete()
@@ -106,24 +211,8 @@ class EmployeeDelete(View):
         return redirect('employee_list')
 
 
+class AssignTools(View):
 
-
-
-class TechToolList(View):
-
-    @method_decorator(login_required(login_url="/login/"))
-    def get(self, request):
-        data = {}
-        tools = TechTool.objects.all()
-        data['tools'] = tools
-        return render(request, 'dashboard/techtool-list.html', data)
-
-
-
-
-class DashBoard(View):
-
-    @method_decorator(login_required(login_url="/login/"))
     def get(self, request):
         data = {}
         employees = Employee.objects.all()
@@ -131,4 +220,25 @@ class DashBoard(View):
         tools = TechTool.objects.all()
         data['tools'] = tools
 
-        return render(request, 'dashboard/dashboard.html', data)
+        return render(request, 'dashboard/assign-tool.html', data)
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        emp_id = request.POST.get('emp_id')
+        tool_id = request.POST.get('tool_id')
+        assign_date = request.POST.get('assign_date')
+        submit_date = request.POST.get('submit_date')
+        employee = Employee.objects.get(id=emp_id)
+        tool = TechTool.objects.get(id=tool_id)
+        tool_issue = ToolsIssue.objects.create(empName=employee, techTool=tool, borrowTime=assign_date,
+                                               submitDate=submit_date)
+
+        return redirect('tools_issued')
+
+
+class ToolIssued(View):
+
+    def get(self, request):
+        issued_tools = ToolsIssue.objects.all()
+
+        return render(request, 'dashboard/tool-issue.html', {'issued_tools': issued_tools})

@@ -12,8 +12,8 @@ DESIGNATION = (
 
 
 class TechTool(models.Model):
-    name = models.CharField(max_length=200)
-    status = models.BooleanField(default=True)
+    name = models.CharField(max_length=200, blank=True, null=True)
+    status = models.BooleanField(default=True, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -34,8 +34,8 @@ class Employee(models.Model):
 class ToolsIssue(models.Model):
     empName = models.ForeignKey(Employee, on_delete=models.CASCADE)
     techTool = models.ForeignKey(TechTool, on_delete=models.CASCADE)
-    borrowTime = models.DateTimeField(auto_now_add=True)
-    SubmitDate = models.DateTimeField()
+    borrowTime = models.DateTimeField()
+    submitDate = models.DateTimeField()
 
     def __str__(self):
         return self.techTool.name
