@@ -5,6 +5,8 @@ from django.views import View
 from django.contrib import messages
 from .task import mailToAssignedemp
 
+
+
 class Login(View):
 
     def post(self, request):
@@ -23,6 +25,8 @@ class Login(View):
             return render(request, 'account/login.html')
 
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
         return render(request, 'account/login.html')
 
 

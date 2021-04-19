@@ -15,6 +15,18 @@
             <div id="content">
 
                 {% include 'dashboard/navbar.html' %}
+             {% for message in messages %}
+
+                                        <div class="alert text-success {{ message.tags }} alert-dismissible"
+                                             role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                             <p class="h6  mb-4"> {{ message }}</p>
+
+
+                                        </div>
+                                    {% endfor %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -123,6 +135,18 @@
             </div>
         </div>
     </div>
+
+     {% block js %}
+     <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script>
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
+ {% endblock js %}
+
+
+
 {% endblock %}
 
 

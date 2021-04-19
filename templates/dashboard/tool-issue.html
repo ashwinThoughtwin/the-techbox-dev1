@@ -116,4 +116,12 @@
         </div>
     </div>
 </div>
+      {% block js %}
+     <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script>
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
+ {% endblock js %}
 {%  endblock %}

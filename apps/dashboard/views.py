@@ -136,6 +136,7 @@ class AddEmployees(View):
             print(request.POST)
             if emp_form.is_valid():
                 emp_form.save()
+                messages.success(request,'Employee Add Successfully ')
                 return redirect('employee_list')
             else:
                 return HttpResponse("not valid")

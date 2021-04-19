@@ -1,6 +1,8 @@
 from django import forms
 from apps.dashboard.models import Employee, TechTool,ToolsIssue
 from phone_field import PhoneField
+from django.contrib.admin.widgets import AdminDateWidget
+
 
 DESIGNATION = (
     ('1', ' team leader'),
@@ -73,15 +75,13 @@ class AssignToolForm(forms.ModelForm):
         'class': "form-control"
 
     }))
-    borrowTime = forms.DateTimeField(    widget = forms.SelectDateWidget(attrs={
-        'class': "form-control",
-        'placeholder': 'Assign Date or Time'
-
-    }))
-    submitDate = forms.DateTimeField(widget=forms.SelectDateWidget(attrs={
+    borrowTime = forms.DateField(widget=forms.DateInput(attrs={
         'class': "form-control ",
-        'placeholder': 'Submit Date or Time'
-
+        ' id ':"datepicker1"
+    }))
+    submitDate = forms.DateField(widget=forms.DateInput(attrs={
+        'class': "form-control ",
+        ' id ':"datepicker2"
     }))
 
 
