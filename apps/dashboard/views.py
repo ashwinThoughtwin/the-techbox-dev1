@@ -4,13 +4,14 @@ from django.views import View
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from .forms import EmployeeForm, TechToolForm,AssignToolForm
 from django.contrib import messages
 from django.views.generic import UpdateView
 
 
 class DashBoard(View):
 
-    @method_decorator(login_required(login_url="/login/"))
+    @method_decorator(login_required(login_url="/"))
     def get(self, request):
         data = {}
         employees = Employee.objects.all()
@@ -26,23 +27,23 @@ class DashBoard(View):
         tl = 0
         jd = 0
         sd = 0
-        data['assigned_to_tl']=0
-        data['assigned_to_sd']=0
-        data['assigned_to_jd']=0
-        data['assigned_to_trainee']=0
+        data['assigned_to_tl'] = 0
+        data['assigned_to_sd'] = 0
+        data['assigned_to_jd'] = 0
+        data['assigned_to_trainee'] = 0
         issuedcount = issued_tools.count()
 
         for i in issued_tools:
-            if i.empName.designation == ' team leader':
+            if i.empName.designation =='1':
                 tl += 1
 
-            elif i.empName.designation == ' senior developer':
+            elif i.empName.designation == '2':
                 sd += 1
 
-            elif i.empName.designation == ' junior developer':
+            elif i.empName.designation == '3':
                 jd += 1
 
-            elif i.empName.designation == ' trainee developer':
+            elif i.empName.designation == '4':
                 trainee += 1
 
         if trainee > 0:
@@ -60,12 +61,15 @@ class DashBoard(View):
 class AddTechTools(View):
 
     def post(self, request):
-        name = request.POST.get('name')
-        TechTool.objects.create(name=name)
+        add_too_form = TechToolForm(request.POST)
+        if add_too_form.is_valid():
+            add_too_form.save()
+
         return redirect("techtool_list")
 
     def get(self, request):
-        return render(request, 'dashboard/techtool_add.html')
+        form = TechToolForm
+        return render(request, 'dashboard/techtool_add.html', {'form': form})
 
 
 class TechToolList(View):
@@ -82,27 +86,28 @@ class UpdateTechTools(View):
 
     def post(self, request, pk):
         tool = TechTool.objects.get(id=pk)
-        tool.name = request.POST.get('name')
+        tool_form = TechToolForm(request.POST,instance=tool)
+        if tool_form.is_valid():
 
-        status = request.POST.get('status')
-        if status == 'Yes':
-            tool.status = True
-            tool.save()
+            status = request.POST.get('status')
+            if status == 'Yes':
+                tool_form.status = True
+                tool_form.save()
 
-        else:
-            print(status)
-            tool.status = False
-            tool.save()
+            else:
+                print(status)
+                tool_form.status = False
+                tool_form.save()
 
-        print(request.POST)
-        # tool.save()
+            print(request.POST)
+            # tool.save()
 
-        return redirect("techtool_list")
+            return redirect("techtool_list")
 
-    def get(self, request, pk):
-        tool = TechTool.objects.get(id=pk)
+    def get(self, request,pk):
 
-        return render(request, 'dashboard/update-tool.html', {'tool': tool})
+        form = TechToolForm()
+        return render(request, 'dashboard/update-tool.html', {'form': form})
 
 
 class DeleteTechTools(View):
@@ -121,28 +126,19 @@ class DeleteTechTools(View):
 class AddEmployees(View):
 
     def get(self, request):
-        print(DESIGNATION)
-        designations = []
-        for d in DESIGNATION:
-            designations.append(d[1])
-        return render(request, 'dashboard/add-employee.html', {'designations': designations})
+        form = EmployeeForm
+
+        return render(request, 'dashboard/add-employee.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
         try:
-            designations = []
-            for d in DESIGNATION:
-                designations.append(d[1])
-            name = request.POST.get('name')
-            designation = request.POST.get('designation')
-            address = request.POST.get('address')
-            mobile = request.POST.get('mobile')
-            email = request.POST.get('email')
-            date_of_birth = request.POST.get('dob')
+            emp_form = EmployeeForm(request.POST, request.FILES)
             print(request.POST)
-
-            employee = Employee.objects.create(name=name, designation=designation, address=address,
-                                               mobile=mobile, email=email, date_of_birth=date_of_birth)
-            return redirect('employee_list')
+            if emp_form.is_valid():
+                emp_form.save()
+                return redirect('employee_list')
+            else:
+                return HttpResponse("not valid")
 
         except Exception as e:
             print(e)
@@ -174,30 +170,19 @@ class EmployeeDetail(View):
 class EmployeeUpdate(View):
 
     def get(self, request, pk):
-        employee = Employee.objects.get(id=pk)
-
-        print(DESIGNATION)
-        designations = []
-        for d in DESIGNATION:
-            designations.append(d[1])
-        return render(request, 'dashboard/update-employee.html', {'designations': designations, 'employee': employee})
+        form = EmployeeForm
+        return render(request, 'dashboard/update-employee.html', {'form': form})
 
     @method_decorator(login_required(login_url="/login/"))
     def post(self, request, pk):
-        employee = Employee.objects.get(id=pk)
-        designations = []
-        for d in DESIGNATION:
-            designations.append(d[1])
-        employee.name = request.POST.get('name')
-        employee.designation = request.POST.get('designation')
-        employee.address = request.POST.get('address')
-        employee.mobile = request.POST.get('mobile')
-        employee.email = request.POST.get('email')
-        employee.date_of_birth = request.POST.get('dob')
-        print(request.POST)
-        employee.save()
 
-        return redirect('employee_list')
+        employee = Employee.objects.get(id=pk)
+        emp_upd_form = EmployeeForm(request.POST, request.FILES, instance=employee)
+        if emp_upd_form.is_valid():
+            emp_upd_form.save()
+            return redirect('employee_list')
+        else:
+            return HttpResponse("update not valid ")
 
 
 class EmployeeDelete(View):
@@ -215,25 +200,23 @@ class AssignTools(View):
 
     def get(self, request):
         data = {}
-        employees = Employee.objects.all()
-        data['employees'] = employees
-        tools = TechTool.objects.all()
-        data['tools'] = tools
+        # employees = Employee.objects.all()
+        # data['employees'] = employees
+        # tools = TechTool.objects.all()
+        # data['tools'] = tools
+        assign_from = AssignToolForm
+        data['assign_from']=assign_from
 
         return render(request, 'dashboard/assign-tool.html', data)
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        emp_id = request.POST.get('emp_id')
-        tool_id = request.POST.get('tool_id')
-        assign_date = request.POST.get('assign_date')
-        submit_date = request.POST.get('submit_date')
-        employee = Employee.objects.get(id=emp_id)
-        tool = TechTool.objects.get(id=tool_id)
-        tool_issue = ToolsIssue.objects.create(empName=employee, techTool=tool, borrowTime=assign_date,
-                                               submitDate=submit_date)
+        assign_form =AssignToolForm(request.POST)
 
-        return redirect('tools_issued')
+        if assign_form.is_valid():
+            assign_form.save()
+            return redirect('tools_issued')
+        else:
+            return HttpResponse("no tool issued")
 
 
 class ToolIssued(View):

@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from django.contrib import messages
-
+from .task import mailToAssignedemp
 
 class Login(View):
 
@@ -30,3 +31,9 @@ class Logout(View):
     def get(self, request):
         logout(request)
         return redirect("login")
+
+
+def sendmailToEmp(request):
+
+    mailToAssignedemp()
+    return HttpResponse("mail sended ")

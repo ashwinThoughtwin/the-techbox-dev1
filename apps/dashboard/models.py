@@ -6,7 +6,7 @@ DESIGNATION = (
     ('1', ' team leader'),
     ('2', ' senior developer'),
     ('3', ' junior developer'),
-    ('4', ' trainee developer')
+    ('4', ' trainee developer'),
 )
 
 
@@ -20,6 +20,7 @@ class TechTool(models.Model):
 
 class Employee(models.Model):
     name = models.CharField(max_length=100)
+    image = models.FileField(default='img/undraw_profile.svg',upload_to='img/')
     designation = models.CharField(choices=DESIGNATION, max_length=100)
     address = models.CharField(max_length=150)
     mobile = PhoneField(blank=True, help_text='Contact mobile number')
@@ -35,6 +36,7 @@ class ToolsIssue(models.Model):
     techTool = models.ForeignKey(TechTool, on_delete=models.CASCADE)
     borrowTime = models.DateTimeField()
     submitDate = models.DateTimeField()
+    timeOut = models.BooleanField(default=False)
 
     def __str__(self):
         return self.techTool.name
