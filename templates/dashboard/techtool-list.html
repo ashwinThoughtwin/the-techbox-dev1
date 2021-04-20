@@ -1,11 +1,11 @@
-{%  extends 'base.html' %}
+{% extends 'base.html' %}
 {% block content %}
-<body id="page-top">
+    <body id="page-top">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-{% include 'dashboard/sidebar.html' %}
+        {% include 'dashboard/sidebar.html' %}
 
 
         <!-- Content Wrapper -->
@@ -14,7 +14,7 @@
             <!-- Main Content -->
             <div id="content">
 
-                        {% include 'dashboard/navbar.html' %}
+                {% include 'dashboard/navbar.html' %}
 
 
                 <!-- Begin Page Content -->
@@ -22,58 +22,110 @@
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Tech Tools</h1>
-{#                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.#}
-{#                        For more information about DataTables, please visit the <a target="_blank"#}
-{#                            href="https://datatables.net">official DataTables documentation</a>.</p>#}
+                    {#                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.#}
+                    {#                        For more information about DataTables, please visit the <a target="_blank"#}
+                    {#                            href="https://datatables.net">official DataTables documentation</a>.</p>#}
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">List</h6>
+
                         </div>
+                        <div class="card-header py-3">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#newtooldata">
+                                Add tech tool
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="newtooldata" tabindex="-1" role="dialog"
+                                 aria-labelledby="newtooldataTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="newtooldataTitle">Modal title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="tool-form">
+                                                {#                                {% csrf_token %}#}
+                                                {{ form.as_p }}
+                                                <br>
+
+
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                            <button type="button" class="btn btn-primary" id="tech-btn">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
-                                    <thead  class="bg-secondary text-light">
-                                        <tr>
-                                          <th>Tools</th>
-                                            <th>Available or Not  </th>
-                                              <th>Update </th>
-                                              <th>Delete </th>
-                                        </tr>
+                                <table class="table table-bordered table-striped" id="dataTable" width="100%"
+                                       cellspacing="0">
+                                    <thead class="bg-secondary text-light">
+                                    <tr>
+                                        <th>Tools</th>
+                                        <th>Available or Not</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                    </tr>
                                     </thead>
-                                    <tfoot  class="bg-secondary text-light">
-                                        <tr>
-                                            <th>Tools</th>
-                                            <th>Available or Not  </th>
-                                            <th>Update </th>
-                                              <th>Delete </th>
-{#                                            <th>Mobile</th>#}
-{#                                            <th>Email</th>#}
-{#                                            <th>Date of Birth</th>#}
-                                        </tr>
+                                    <tfoot class="bg-secondary text-light">
+                                    <tr>
+                                        <th>Tools</th>
+                                        <th>Available or Not</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                        {#                                            <th>Mobile</th>#}
+                                        {#                                            <th>Email</th>#}
+                                        {#                                            <th>Date of Birth</th>#}
+                                    </tr>
                                     </tfoot>
 
-                                    <tbody>
+                                    <tbody class="new_tool">
                                     {% for tool in tools %}
-                                        <tr>
+                                        <tr class="tools">
                                             <td>{{ tool.name }}</td>
                                             {% if tool.status is True %}
-                                            <td class="text-success"> In Stock</td>
+                                                <td class="text-success"> In Stock</td>
                                             {% else %}
-                                              <td class="text-danger"> Out of Stock</td>
+                                                <td class="text-danger"> Out of Stock</td>
 
 
                                             {% endif %}
 
-                                          <td>  <a href="{% url 'update_techtool' tool.id %}"><button class="btn btn-primary btn-sm">Update</button></a></td>
-                                            <td>  <a href="{% url 'delete_techtool' tool.id %}"><button class="btn btn-danger btn-sm">Delete</button></a></td>
+                                            <td>
+                                                <div>
+                                                        <input class="btn btn-primary btn-sm" type="button"
+                                                           data-id="{{ tool.id }}" id="obj-update-btn" value="update ">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <input class="btn btn-danger btn-sm" type="button"
+                                                           data-id="{{ tool.id }}" id="tech-del-btn" value="Delete ">
+                                                </div>
+                                            </td>
 
-{#                                            <td>{{ employee.mobile }}</td>#}
-{#                                            <td>{{ employee.email }}</td>#}
-{#                                            <td>{{ employee.date_of_birth }}</td>#}
+                                            {#                                            <td>{{ employee.mobile }}</td>#}
+                                            {#                                            <td>{{ employee.email }}</td>#}
+                                            {#                                            <td>{{ employee.date_of_birth }}</td>#}
                                         </tr>
                                     {% endfor %}
+
 
                                     </tbody>
                                 </table>
@@ -110,7 +162,7 @@
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -128,12 +180,101 @@
         </div>
     </div>
 
-  {% block js %}
-     <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-    <script>
-$(document).ready( function () {
-    $('#myTable').DataTable();
-} );
-</script>
- {% endblock js %}
+
+    {% block js %}
+        <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#myTable').DataTable();
+            });
+        </script>
+
+
+        <script>
+            $(document).ready(function () {
+                $(document).on('click', '#tech-btn', function (e) {
+                    e.preventDefault();
+                    var tool_name = $('#tool-name').val();
+                    var checked = $('#tool-status').is(':checked');
+                    if (checked) {
+                        var tool_status = "on"
+
+                    }
+                    var my_data = {
+                        "name": tool_name,
+                        "status": tool_status,
+                        'csrfmiddlewaretoken': "{{ csrf_token }}",
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'add_techtool' %}",
+                        data: my_data,
+                        success: function (data) {
+                            $('.new_tool').append(data);
+                            $('#newtooldata').modal('hide');
+                        },
+                    });
+                });
+
+            });
+        </script>
+
+            <script>
+            $(document).ready(function () {
+                $(document).on('click', '#obj-update-btn', function (e) {
+                    e.preventDefault();
+
+                    var obj = $(this); // first store $(this) in obj
+                    var id = $(obj).data('id'); // get id of data using this
+                    {#var id = $('input#tool-update-id').val()#}
+
+
+                    var my_data = {
+                        "id" : id,
+                        'csrfmiddlewaretoken': "{{ csrf_token }}",
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'update_techtool' %}",
+                        data: my_data,
+                        success: function (data) {
+                            alert("updated !")
+                            $('#updatetoolmodal').modal('hide');
+                        },
+                    });
+                });
+
+            });
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                $(document).on('click', '#tech-del-btn', function (e) {
+                    e.preventDefault();
+                    var obj = $(this); // first store $(this) in obj
+                    var id = $(this).data('id'); // get id of data using this
+
+
+                    var my_data = {
+
+                        "id": id,
+                        'csrfmiddlewaretoken': "{{ csrf_token }}",
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'delete_techtool'%}",
+                        data: my_data,
+                        success: function (json) {
+                            $(obj).closest("tr").remove();
+                            alert("tool delete successfully ")
+                        },
+                    });
+                });
+
+            });
+        </script>
+
+
+    {% endblock js %}
+
 {% endblock %}

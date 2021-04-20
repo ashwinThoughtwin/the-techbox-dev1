@@ -4,7 +4,7 @@ from django.views import View
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .forms import EmployeeForm, TechToolForm,AssignToolForm
+from .forms import EmployeeForm, TechToolForm, AssignToolForm
 from django.contrib import messages
 from django.views.generic import UpdateView
 
@@ -34,7 +34,7 @@ class DashBoard(View):
         issuedcount = issued_tools.count()
 
         for i in issued_tools:
-            if i.empName.designation =='1':
+            if i.empName.designation == '1':
                 tl += 1
 
             elif i.empName.designation == '2':
@@ -61,15 +61,20 @@ class DashBoard(View):
 class AddTechTools(View):
 
     def post(self, request):
+        data = {}
+        print(request.POST)
         add_too_form = TechToolForm(request.POST)
         if add_too_form.is_valid():
             add_too_form.save()
+            newtool = TechTool.objects.get(name=request.POST.get('name'))
+            print(newtool.id)
+            data['newtool'] = newtool
 
-        return redirect("techtool_list")
+        return render(request, 'dashboard/newtool.html', data)
 
-    def get(self, request):
-        form = TechToolForm
-        return render(request, 'dashboard/techtool_add.html', {'form': form})
+    # def get(self, request):
+    #     form = TechToolForm
+    #     return render(request, 'dashboard/techtool_add.html', {'form': form})
 
 
 class TechToolList(View):
@@ -77,22 +82,29 @@ class TechToolList(View):
     @method_decorator(login_required(login_url="/login/"))
     def get(self, request):
         data = {}
+        form = TechToolForm
         tools = TechTool.objects.all()
         data['tools'] = tools
+        data['form'] = form
         return render(request, 'dashboard/techtool-list.html', data)
 
 
 class UpdateTechTools(View):
 
-    def post(self, request, pk):
-        tool = TechTool.objects.get(id=pk)
-        tool_form = TechToolForm(request.POST,instance=tool)
-        if tool_form.is_valid():
+    def post(self, request):
+        pk= request.POST.get('id')
+        print(request.POST)
 
+        tool = TechTool.objects.get(id=pk)
+        print(tool)
+        tool_form = TechToolForm(request.POST, instance=tool)
+        if tool_form.is_valid():
             status = request.POST.get('status')
-            if status == 'Yes':
+            print(status)
+            if status == 'on':
                 tool_form.status = True
                 tool_form.save()
+
 
             else:
                 print(status)
@@ -102,22 +114,24 @@ class UpdateTechTools(View):
             print(request.POST)
             # tool.save()
 
-            return redirect("techtool_list")
+        return redirect("techtool_list")
 
-    def get(self, request,pk):
-
-        form = TechToolForm()
-        return render(request, 'dashboard/update-tool.html', {'form': form})
+    # def get(self, request):
+    #
+    #     form = TechToolForm()
+    #     return render(request, 'dashboard/update-tool.html', {'form': form})
 
 
 class DeleteTechTools(View):
 
-    def get(self, request, pk):
-        tool = TechTool.objects.get(id=pk)
+    def post(self, request):
+        tool_id = request.POST.get('id')
+        print(tool_id)
+        tool = TechTool.objects.get(id=tool_id)
 
         tool.delete()
 
-        return redirect("techtool_list")
+        return redirect('techtool_list')
 
 
 # Employee views
@@ -136,7 +150,7 @@ class AddEmployees(View):
             print(request.POST)
             if emp_form.is_valid():
                 emp_form.save()
-                messages.success(request,'Employee Add Successfully ')
+                messages.success(request, 'Employee Add Successfully ')
                 return redirect('employee_list')
             else:
                 return HttpResponse("not valid")
@@ -206,12 +220,12 @@ class AssignTools(View):
         # tools = TechTool.objects.all()
         # data['tools'] = tools
         assign_from = AssignToolForm
-        data['assign_from']=assign_from
+        data['assign_from'] = assign_from
 
         return render(request, 'dashboard/assign-tool.html', data)
 
     def post(self, request, *args, **kwargs):
-        assign_form =AssignToolForm(request.POST)
+        assign_form = AssignToolForm(request.POST)
 
         if assign_form.is_valid():
             assign_form.save()

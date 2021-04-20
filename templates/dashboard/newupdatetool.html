@@ -1,0 +1,18 @@
+<tr>
+<td>{{ updated_tool.name }}</td>
+{% if updated_tool.status is True %}
+    <td class="text-success"> In Stock</td>
+{% else %}
+    <td class="text-danger"> Out of Stock</td>
+
+{% endif %}
+
+<td><a href="{% url 'update_techtool' %}">
+    <button class="btn btn-primary btn-sm">Update</button>
+</a></td>
+<td><a href="{% url 'delete_techtool'%}">
+    <button class="btn btn-danger btn-sm">Delete</button>
+</a></td>
+</tr>
+
+

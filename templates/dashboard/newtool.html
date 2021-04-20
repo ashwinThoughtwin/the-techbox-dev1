@@ -1,0 +1,48 @@
+
+<tr>
+    <td>{{ newtool.name }}</td>
+    {% if newtool.status is True %}
+        <td class="text-success"> In Stock</td>
+    {% else %}
+        <td class="text-danger"> Out of Stock</td>
+
+    {% endif %}
+
+    <td><a href="{% url 'update_techtool' %}">
+        <button class="btn btn-primary btn-sm">Update</button>
+    </a></td>
+    <td>
+        <div>
+            <input class="btn btn-danger btn-sm" type="submit"
+                   data-id="{{ newtool.id }}" id="tech-del-btn" value="Delete ">
+        </div>
+    </td>
+
+</tr>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '#tech-del-btn', function (e) {
+            e.preventDefault();
+            var obj = $(this); // first store $(this) in obj
+            var id = $(this).data('id'); // get id of data using this
+
+
+            var my_data = {
+
+                "id": id,
+                'csrfmiddlewaretoken': "{{ csrf_token }}",
+            }
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'delete_techtool'%}",
+                data: my_data,
+                success: function (json) {
+                    $(obj).closest("tr").remove();
+
+                },
+            });
+        });
+
+    });
+</script>

@@ -3,7 +3,7 @@
 {% block content %}
     <!-- Page Wrapper -->
     <div id="wrapper">
-     {% include 'dashboard/sidebar.html' %}
+        {% include 'dashboard/sidebar.html' %}
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -12,18 +12,18 @@
             <div id="content">
 
                 {% include 'dashboard/navbar.html' %}
-                  {% for message in messages %}
+                {% for message in messages %}
 
-                                        <div class="alert text-success {{ message.tags }} alert-dismissible"
-                                             role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                             <p class="h6  mb-4"> {{ message }}</p>
+                    <div class="alert text-success {{ message.tags }} alert-dismissible"
+                         role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <p class="h6  mb-4"> {{ message }}</p>
 
 
-                                        </div>
-                                    {% endfor %}
+                    </div>
+                {% endfor %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -40,13 +40,13 @@
 
                         <div class="container">
 
-                            <form method="post">
-                                {% csrf_token %}
+                            <div id="tool-form">
+                                {#                                {% csrf_token %}#}
                                 {{ form.as_p }}
                                 <br>
 
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
+                                <input type="button" class="btn btn-primary" id="tech-btn" value="Submit">
+                            </div>
 
                         </div>
                     </div>
@@ -55,27 +55,36 @@
         </div>
     </div>
 
-       {% block js %}
-     <script>
-  $(document).on('click', '#cmt-btn',function(e){
-    var cmt_post_id = $('#cmt-post-id').val();
-    var comment = $('#cmt').val();
-    var my_data = {
-      "cmt_post_id" : cmt_post_id,
-      "comment" : comment,
-      'csrfmiddlewaretoken': "{{ csrf_token }}",
-    }
-    $.ajax({
-    type:'GET',
-    url: "{% url 'comments' %}",
-    data:my_data,
-  success:function(json){
-    $('.new_comment').append(json);
-    },
-});
-});
-</script>
- {% endblock js %}
+    {% block js %}
+
+        <script>
+            $(document).ready(function () {
+                $(document).on('click', '#tech-btn', function (e) {
+                    e.preventDefault();
+                    var tool_name = $('#tool-name').val();
+                    var checked = $('#tool-status').is(':checked');
+                    if (checked) {
+                        var tool_status = "on"
+
+                    }
+                    var my_data = {
+                        "name": tool_name,
+                        "status": tool_status,
+                        'csrfmiddlewaretoken': "{{ csrf_token }}",
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'add_techtool' %}",
+                        data: my_data,
+                        success: function (json) {
+                            $('.new_comment').append(json);
+                        },
+                    });
+                });
+
+            });
+        </script>
+    {% endblock js %}
 
 
 

@@ -11,8 +11,8 @@ urlpatterns = [
     path('employee-detail/<int:pk>/', views.EmployeeDetail.as_view(), name='employee_detail'),
 
     path('add-techtool/', views.AddTechTools.as_view(), name='add_techtool'),
-    path('update-techtool/<int:pk>/', views.UpdateTechTools.as_view(), name='update_techtool'),
-    path('delete-techtool/<int:pk>/', views.DeleteTechTools.as_view(), name='delete_techtool'),
+    path('update-techtool/', views.UpdateTechTools.as_view(), name='update_techtool'),
+    path('delete-techtool/', views.DeleteTechTools.as_view(), name='delete_techtool'),
     path('techtool-list/', views.TechToolList.as_view(), name='techtool_list'),
 
     path('assign-tool/', views.AssignTools.as_view(), name='assign_tool'),

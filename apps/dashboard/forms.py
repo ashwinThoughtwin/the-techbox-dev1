@@ -54,11 +54,13 @@ class EmployeeForm(forms.ModelForm):
 class TechToolForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Name'
+        'placeholder': 'Employee Name',
+        'id': "tool-name"
     }))
     status = forms.BooleanField(widget=forms.CheckboxInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Name'
+        'placeholder': 'Employee Name',
+        'id': "tool-status"
     }), required=False)
 
     class Meta:
