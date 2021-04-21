@@ -15,33 +15,41 @@ DESIGNATION = (
 class EmployeeForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Name'
+        'placeholder': 'Employee Name',
+        'id': "emp-name"
     }))
     image = forms.FileField(widget=forms.FileInput(attrs={
-        'class': "form-control"
+        'class': "form-control",
+        'id': "emp-image"
     }))
     designation = forms.ChoiceField(choices=DESIGNATION, widget=forms.Select(attrs={
-        'class': "form-control"
+        'class': "form-control",
+        'id': "emp-designation"
 
     }))
 
     address = forms.CharField(widget=forms.TextInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee address'
+        'placeholder': 'Employee address',
+        'id': "emp-address"
     }))
 
     mobile = forms.IntegerField(widget=forms.NumberInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Mobile'
+        'placeholder': 'Employee Mobile',
+        'id': "emp-mobile"
     }))
 
     email = forms.EmailField(widget=forms.EmailInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Email'
+        'placeholder': 'Employee Email',
+        'id': "emp-email"
     }))
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Date of Birth'
+        'placeholder': 'Employee Date of Birth',
+        'id': "emp-dob"
+
 
     }))
 

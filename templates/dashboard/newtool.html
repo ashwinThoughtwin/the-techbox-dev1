@@ -8,9 +8,46 @@
 
     {% endif %}
 
-    <td><a href="{% url 'update_techtool' %}">
-        <button class="btn btn-primary btn-sm">Update</button>
-    </a></td>
+    <td>
+         <!-- Button trigger modal -->
+                                                <button id='tech-update-btn' type="button"
+                                                        data-target="#orderModal"
+                                                        data-id="{{ tool.id }}" class='btn btn-primary btn-sm'
+                                                        data-toggle="modal">update
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="orderModal"
+                                                     tabindex="-1"
+                                                     role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                                     aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLongTitle">Modal
+                                                                    title</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                        aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body" id="toolupdform">
+                                                                <input type="text" id="name">
+                                                                <input type="checkbox" id="status" checked>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+
+                                                                <button type="button" class="btn btn-primary"
+                                                                        id="obj-update-btn">Save
+                                                                    changes
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+    </td>
     <td>
         <div>
             <input class="btn btn-danger btn-sm" type="submit"
@@ -46,3 +83,52 @@
 
     });
 </script>
+
+
+{##}
+{#        <script>#}
+{#            $(document).ready(function () {#}
+{#                $(document).on('click', '#tech-update-btn', function (e) {#}
+{#                    e.preventDefault();#}
+{#                    var obj = $(this); // first store $(this) in obj#}
+{#                    var id1 = $(this).data('id'); // get id of data using this#}
+{##}
+{#                    $(document).on('click', '#obj-update-btn', function (e) {#}
+{##}
+{#                        var id = id1;#}
+{#                        var name = $('#name').val()#}
+{##}
+{#                        var checked = $('#status').is(':checked');#}
+{#                        if (checked) {#}
+{#                            var tool_status = "on"#}
+{#                        }#}
+{#                        var my_data = {#}
+{#                            'id': id,#}
+{#                            "name": name,#}
+{#                            "status": tool_status,#}
+{##}
+{#                            'csrfmiddlewaretoken': "{{ csrf_token }}",#}
+{#                        }#}
+{##}
+{##}
+{#                        $.ajax({#}
+{#                            type: 'POST',#}
+{#                            url: "{% url 'update_techtool'%}",#}
+{#                            data: my_data,#}
+{#                            success: function (json) {#}
+{#                                $(obj).closest("tr").remove();#}
+{#                                $('.new_tool').append(json);#}
+{##}
+{#                                $('#orderModal').modal('hide');#}
+{#                                $('#orderModal').modal('reset');#}
+{##}
+{#                                $("#toolupdform")[0].reset();#}
+{#                            },#}
+{#                        });#}
+{#                    });#}
+{##}
+{#                });#}
+{#            });#}
+{##}
+{##}
+{#        </script>#}

@@ -1,0 +1,11 @@
+<tr>
+    <td>{{ newemp.name }}</td>
+    <td> {{ newemp.get_designation_display }}</td>
+    <td>{{ newemp.address }}</td>
+    <td>{{ newemp.mobile }}</td>
+    <td>{{ newemp.email }}</td>
+    <td>{{ newemp.date_of_birth }}</td>
+    <td><a href="{% url 'employee_detail' newemp.id %}">
+        <button class="btn-outline-primary rounded-pill">View</button>
+    </a></td>
+</tr>

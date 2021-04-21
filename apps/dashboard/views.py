@@ -92,30 +92,31 @@ class TechToolList(View):
 class UpdateTechTools(View):
 
     def post(self, request):
-        pk= request.POST.get('id')
-        print(request.POST)
+        data ={}
+        try:
+            pk = request.POST.get("id")
+            print(request.POST)
+            tool = TechTool.objects.get(id=pk)
+            print(tool)
 
-        tool = TechTool.objects.get(id=pk)
-        print(tool)
-        tool_form = TechToolForm(request.POST, instance=tool)
-        if tool_form.is_valid():
             status = request.POST.get('status')
             print(status)
             if status == 'on':
-                tool_form.status = True
-                tool_form.save()
+                tool.status = True
+                tool.save()
+                data['newtool']=tool
 
 
             else:
                 print(status)
-                tool_form.status = False
-                tool_form.save()
-
-            print(request.POST)
-            # tool.save()
-
-        return redirect("techtool_list")
-
+                tool.status = False
+                tool.save()
+                data['newtool']=tool
+        except Exception as e:
+            print(e)
+        return render(request,'dashboard/newtool.html',data)
+    #
+    #
     # def get(self, request):
     #
     #     form = TechToolForm()
@@ -146,12 +147,17 @@ class AddEmployees(View):
 
     def post(self, request, *args, **kwargs):
         try:
+            data = {}
             emp_form = EmployeeForm(request.POST, request.FILES)
-            print(request.POST)
+            print(request.POST),
+            print(request.FILES)
             if emp_form.is_valid():
                 emp_form.save()
                 messages.success(request, 'Employee Add Successfully ')
-                return redirect('employee_list')
+                newemp = Employee.objects.get(name=request.POST.get('name'))
+                data['newemp'] = newemp
+
+                return render(request,'dashboard/newempdata.html',data)
             else:
                 return HttpResponse("not valid")
 
@@ -167,6 +173,7 @@ class EmployeeList(View):
         data = {}
         employees = Employee.objects.all()
         data['employees'] = employees
+        data['form']= EmployeeForm
 
         return render(request, 'dashboard/employee-list.html', data)
 
