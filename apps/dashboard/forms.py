@@ -62,12 +62,12 @@ class EmployeeForm(forms.ModelForm):
 class TechToolForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Name',
+        'placeholder': 'Tool  Name',
         'id': "tool-name"
     }))
     status = forms.BooleanField(widget=forms.CheckboxInput(attrs={
         'class': "form-control",
-        'placeholder': 'Employee Name',
+
         'id': "tool-status"
     }), required=False)
 
@@ -85,13 +85,16 @@ class AssignToolForm(forms.ModelForm):
         'class': "form-control"
 
     }))
-    borrowTime = forms.DateField(widget=forms.DateInput(attrs={
+    borrowTime = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
         'class': "form-control ",
-        ' id ':"datepicker1"
+        ' id ': "datepicker1",
+        'type' : "datetime-local"
     }))
-    submitDate = forms.DateField(widget=forms.DateInput(attrs={
+    submitDate = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
         'class': "form-control ",
-        ' id ':"datepicker2"
+        ' id ':"datepicker2",
+        'type': "datetime-local"
+
     }))
 
 

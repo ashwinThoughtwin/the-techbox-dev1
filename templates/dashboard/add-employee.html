@@ -22,9 +22,7 @@
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800"> Add New Employee  </h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank"
-                            href="https://datatables.net">official DataTables documentation</a>.</p>
+
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
@@ -47,8 +45,8 @@
                             <h3 class="mb-0">User Information</h3>
                         </div>
                         <div class="card-body">
-                            <form autocomplete="on" class="form" role="form" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
+                            <div>
+
                                 <div class="form-group row">
 {#                                    <label class="col-lg-3 col-form-label form-control-label"> Name</label>#}
                                     <div class="col-lg-9">
@@ -63,7 +61,7 @@
                                         <input class="btn btn-primary" type="submit" value="Save Employee">
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div><!-- /form user info -->
                 </div>
@@ -77,5 +75,42 @@
             </div>
         </div>
     </div>
+
+    {% block js %}
+          <script>
+            $(document).ready(function () {
+                $(document).on('click', '#emp-btn', function (e) {
+                    e.preventDefault();
+
+                    var formData = new FormData();
+                    formData.append('image', $('#emp-image')[0].files[0]);
+                    formData.append("name", $('#emp-name').val());
+                    formData.append("designation", $('#emp-designation').val());
+                    formData.append("address", $('#emp-address').val());
+                    formData.append("mobile", $('#emp-mobile').val());
+                    formData.append("email", $('#emp-email').val());
+                    formData.append("date_of_birth", $('#emp-dob').val());
+                    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'add_employee' %}",
+                        data: formData,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            $('.empdata').append(data);
+                            $('#newempdata').modal('hide');
+                        },
+                    });
+                });
+
+            });
+        </script>
+        {%  endblock js %}
 {% endblock %}
+
+
+
 

@@ -92,7 +92,7 @@ class TechToolList(View):
 class UpdateTechTools(View):
 
     def post(self, request):
-        data ={}
+        data = {}
         try:
             pk = request.POST.get("id")
             print(request.POST)
@@ -104,17 +104,17 @@ class UpdateTechTools(View):
             if status == 'on':
                 tool.status = True
                 tool.save()
-                data['newtool']=tool
+                data['newtool'] = tool
 
 
             else:
                 print(status)
                 tool.status = False
                 tool.save()
-                data['newtool']=tool
+                data['newtool'] = tool
         except Exception as e:
             print(e)
-        return render(request,'dashboard/newtool.html',data)
+        return render(request, 'dashboard/newtool.html', data)
     #
     #
     # def get(self, request):
@@ -142,7 +142,6 @@ class AddEmployees(View):
 
     def get(self, request):
         form = EmployeeForm
-
         return render(request, 'dashboard/add-employee.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
@@ -157,13 +156,13 @@ class AddEmployees(View):
                 newemp = Employee.objects.get(name=request.POST.get('name'))
                 data['newemp'] = newemp
 
-                return render(request,'dashboard/newempdata.html',data)
+                return render(request, 'dashboard/newempdata.html', data)
             else:
                 return HttpResponse("not valid")
 
         except Exception as e:
             print(e)
-        return render(request, 'dashboard/add-employee.html')
+        return render(request, 'dashboard/employee-list.html')
 
 
 class EmployeeList(View):
@@ -173,7 +172,7 @@ class EmployeeList(View):
         data = {}
         employees = Employee.objects.all()
         data['employees'] = employees
-        data['form']= EmployeeForm
+        data['form'] = EmployeeForm
 
         return render(request, 'dashboard/employee-list.html', data)
 
@@ -210,40 +209,45 @@ class EmployeeUpdate(View):
 class EmployeeDelete(View):
 
     @method_decorator(login_required(login_url="/login/"))
-    def get(self, request, pk):
+    def post(self, request):
         data = {}
+        pk = request.POST.get('id')
         employee = Employee.objects.get(pk=pk)
         employee.delete()
+        messages.success(request, 'Employee Delete Successfully ')
 
         return redirect('employee_list')
 
 
 class AssignTools(View):
-
-    def get(self, request):
-        data = {}
-        # employees = Employee.objects.all()
-        # data['employees'] = employees
-        # tools = TechTool.objects.all()
-        # data['tools'] = tools
-        assign_from = AssignToolForm
-        data['assign_from'] = assign_from
-
-        return render(request, 'dashboard/assign-tool.html', data)
-
     def post(self, request, *args, **kwargs):
         assign_form = AssignToolForm(request.POST)
 
         if assign_form.is_valid():
-            assign_form.save()
-            return redirect('tools_issued')
+            t_id = request.POST.get('techTool')
+
+            tool = TechTool.objects.get(id=t_id)
+
+            if tool.status == True:
+                assign_form.save()
+                messages.success(request, "tool are issued")
+                return redirect('tools_issued')
+
+            else:
+                messages.error(request, "tool not available")
+                return redirect('assign_tool')
+
         else:
             return HttpResponse("no tool issued")
+    def get(self, request):
+        assign_from = AssignToolForm
+
+        return render(request, 'dashboard/assign-tool.html', {'assign_from':assign_from})
 
 
 class ToolIssued(View):
 
     def get(self, request):
+        assign_from = AssignToolForm
         issued_tools = ToolsIssue.objects.all()
-
-        return render(request, 'dashboard/tool-issue.html', {'issued_tools': issued_tools})
+        return render(request, 'dashboard/tool-issue.html', {'issued_tools': issued_tools,'assign_from':assign_from})
