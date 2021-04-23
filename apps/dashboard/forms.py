@@ -85,11 +85,11 @@ class AssignToolForm(forms.ModelForm):
         'class': "form-control"
 
     }))
-    borrowTime = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
-        'class': "form-control ",
-        ' id ': "datepicker1",
-        'type' : "datetime-local"
-    }))
+    # borrowTime = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
+    #     'class': "form-control ",
+    #     ' id ': "datepicker1",
+    #     'type' : "datetime-local"
+    # }))
     submitDate = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
         'class': "form-control ",
         ' id ':"datepicker2",
@@ -100,4 +100,4 @@ class AssignToolForm(forms.ModelForm):
 
     class Meta:
         model = ToolsIssue
-        fields = ('empName','techTool','borrowTime','submitDate')
+        fields = ('empName','techTool','submitDate')

@@ -1,5 +1,7 @@
+import datetime
+
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import View
 from .models import *
 from django.contrib.auth.decorators import login_required
@@ -7,6 +9,10 @@ from django.utils.decorators import method_decorator
 from .forms import EmployeeForm, TechToolForm, AssignToolForm
 from django.contrib import messages
 from django.views.generic import UpdateView
+from apps.account.task import mailToAssignedemp
+import pytz
+ist=pytz.timezone("Asia/Calcutta")
+
 
 
 class DashBoard(View):
@@ -225,10 +231,14 @@ class AssignTools(View):
 
         if assign_form.is_valid():
             t_id = request.POST.get('techTool')
+            submitdate = request.POST.get('submitDate')
+            print(submitdate)
+
 
             tool = TechTool.objects.get(id=t_id)
-
-            if tool.status == True:
+            x = ist.localize(datetime.datetime.now())
+            print(x)
+            if (tool.status == True) and (submitdate > x):
                 assign_form.save()
                 messages.success(request, "tool are issued")
                 return redirect('tools_issued')
@@ -239,15 +249,21 @@ class AssignTools(View):
 
         else:
             return HttpResponse("no tool issued")
+
     def get(self, request):
         assign_from = AssignToolForm
 
-        return render(request, 'dashboard/assign-tool.html', {'assign_from':assign_from})
+        return render(request, 'dashboard/assign-tool.html', {'assign_from': assign_from})
 
 
 class ToolIssued(View):
 
     def get(self, request):
+        # mailToAssignedemp()
+
         assign_from = AssignToolForm
         issued_tools = ToolsIssue.objects.all()
-        return render(request, 'dashboard/tool-issue.html', {'issued_tools': issued_tools,'assign_from':assign_from})
+        d = datetime.datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S %z")
+        print(d)
+
+        return render(request, 'dashboard/tool-issue.html', {'issued_tools': issued_tools, 'assign_from': assign_from})

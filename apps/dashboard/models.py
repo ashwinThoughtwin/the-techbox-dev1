@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from phone_field import PhoneField
 
@@ -34,7 +36,7 @@ class Employee(models.Model):
 class ToolsIssue(models.Model):
     empName = models.ForeignKey(Employee, on_delete=models.CASCADE)
     techTool = models.ForeignKey(TechTool, on_delete=models.CASCADE)
-    borrowTime = models.DateTimeField()
+    borrowTime = models.DateTimeField(auto_now_add=True)
     submitDate = models.DateTimeField()
     timeOut = models.BooleanField(default=False)
 
