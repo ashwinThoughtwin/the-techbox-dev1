@@ -1,8 +1,8 @@
 from django import forms
-from apps.dashboard.models import Employee, TechTool,ToolsIssue
+import datetime
+from apps.dashboard.models import Employee, TechTool, ToolsIssue
 from phone_field import PhoneField
 from django.contrib.admin.widgets import AdminDateWidget
-
 
 DESIGNATION = (
     ('1', ' team leader'),
@@ -50,7 +50,6 @@ class EmployeeForm(forms.ModelForm):
         'placeholder': 'Employee Date of Birth',
         'id': "emp-dob"
 
-
     }))
 
     class Meta:
@@ -77,7 +76,7 @@ class TechToolForm(forms.ModelForm):
 
 
 class AssignToolForm(forms.ModelForm):
-    empName = forms.ModelChoiceField(queryset=Employee.objects.all(),widget=forms.Select(attrs={
+    empName = forms.ModelChoiceField(queryset=Employee.objects.all(), widget=forms.Select(attrs={
         'class': "form-control"
 
     }))
@@ -92,12 +91,12 @@ class AssignToolForm(forms.ModelForm):
     # }))
     submitDate = forms.DateTimeField(widget=forms.DateTimeInput(attrs={
         'class': "form-control ",
-        ' id ':"datepicker2",
-        'type': "datetime-local"
+        ' id ': "datepicker2",
+        'type': "datetime-local",
+        'min': datetime.datetime.now(),
 
     }))
 
-
     class Meta:
         model = ToolsIssue
-        fields = ('empName','techTool','submitDate')
+        fields = ('empName', 'techTool', 'submitDate')

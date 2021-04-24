@@ -1,24 +1,25 @@
+import pytz
 import datetime
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
 from django.views import View
-from .models import *
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from .forms import EmployeeForm, TechToolForm, AssignToolForm
+from django.conf import settings
 from django.contrib import messages
-from django.views.generic import UpdateView
-from apps.account.task import mailToAssignedemp
-import pytz
-ist=pytz.timezone("Asia/Calcutta")
+from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from .forms import EmployeeForm, TechToolForm, AssignToolForm
 
+from .models import *
+from apps.account.task import status_change
 
 
 class DashBoard(View):
 
     @method_decorator(login_required(login_url="/"))
     def get(self, request):
+
         data = {}
         employees = Employee.objects.all()
         data['employees'] = employees
@@ -227,25 +228,35 @@ class EmployeeDelete(View):
 
 class AssignTools(View):
     def post(self, request, *args, **kwargs):
+        ist = pytz.timezone("Asia/Calcutta")
         assign_form = AssignToolForm(request.POST)
 
         if assign_form.is_valid():
             t_id = request.POST.get('techTool')
-            submitdate = request.POST.get('submitDate')
-            print(submitdate)
-
-
+            min_date = ist.localize(datetime.datetime.now())
             tool = TechTool.objects.get(id=t_id)
-            x = ist.localize(datetime.datetime.now())
-            print(x)
-            if (tool.status == True) and (submitdate > x):
-                assign_form.save()
-                messages.success(request, "tool are issued")
+            submitdate = request.POST.get('submitDate')
+            format_iso_now = min_date.isoformat()
+
+            if (tool.status == False):
+                messages.error(request, "tool not available")
                 return redirect('tools_issued')
 
+            elif submitdate <= format_iso_now:
+                print("hi elif")
+                messages.error(request, "Past date or time not allowed ")
+                return redirect('tools_issued')
             else:
-                messages.error(request, "tool not available")
-                return redirect('assign_tool')
+                assign_form.save()
+                issue = ToolsIssue.objects.latest('borrowTime')
+                subject = f'Hello {issue.empName.name}  your {issue.techTool.name}  Issued '
+                message = f'Hi  your techtool- {issue.techTool.name} has been Issued Please collect from office if you already ' \
+                          f'collect then skip this mail Have A Good !'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [issue.empName.email, ]
+                send_mail(subject, message, email_from, recipient_list)
+                messages.success(request, "tool are issued")
+                return redirect('tools_issued')
 
         else:
             return HttpResponse("no tool issued")
@@ -259,11 +270,13 @@ class AssignTools(View):
 class ToolIssued(View):
 
     def get(self, request):
-        # mailToAssignedemp()
-
         assign_from = AssignToolForm
-        issued_tools = ToolsIssue.objects.all()
-        d = datetime.datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S %z")
-        print(d)
 
-        return render(request, 'dashboard/tool-issue.html', {'issued_tools': issued_tools, 'assign_from': assign_from})
+        status_change()
+
+        issued_tools = ToolsIssue.objects.all()
+        # d = datetime.datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S %z")
+        # print(d)
+        data = {'issued_tools': issued_tools, 'assign_from': assign_from}
+
+        return render(request, 'dashboard/tool-issue.html', data)

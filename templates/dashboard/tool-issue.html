@@ -80,6 +80,8 @@
                                         <th>Tech Tool</th>
                                         <th>Assign Date</th>
                                         <th>Submit Date</th>
+                                        <th>Status</th>
+
 
 
 
@@ -92,6 +94,7 @@
                                         <th>Tech Tool</th>
                                         <th>Assign Date</th>
                                         <th>Submit Date</th>
+                                         <th>Status</th>
 
 
                                     </tr>
@@ -105,6 +108,11 @@
                                             <td>{{ issued.techTool }}</td>
                                             <td>{{ issued.borrowTime }}</td>
                                             <td>{{ issued.submitDate }}</td>
+                                            {% if issued.timeOut is True %}
+                                            <td class="text-danger">Time over</td>
+                                                {% else %}
+                                                <td class="text-success">success</td>
+                                        {% endif %}
                                           </tr>
                                     {% endfor %}
 
