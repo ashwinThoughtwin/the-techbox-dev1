@@ -37,40 +37,79 @@
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800"> Assign Tool to Employee </h1>
 
-                    <form method="post">
-                        {% csrf_token %}
 
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                {{ assign_from.empName }}
 
-                            </div>
-                            <div class="form-group col-md-4">
-                                {{ assign_from.techTool }}
-                            </div>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style=" background-image: linear-gradient(to right, darkslategray,#1a202c)">
+  Assign Tool
+</button>
 
-                        </div>
-                        <div class="row">
-                                <div class="form-group col-md-4">
-                                     {{ assign_from.borrowTime }}
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-light"  style=" background-image: linear-gradient(to right,#1a202c,darkslategray)">
+        <h5 class="modal-title " id="exampleModalLongTitle">Assign Tools</h5>
+        <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close" >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form method="post" action="{% url 'assign_tool' %}">
+              {%  csrf_token %}
+               {{ assign_from.as_p }}
 
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn  text-light" style=" background-image: linear-gradient(to right,#1a202c,darkslategray)">Assign TechTool</button>
+      </div>
+        </form>
+         </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+                            <div class="col-lg-6 mb-4">
+
+                                <!-- Illustrations -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        {#                                <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>#}
+                                    </div>
+                                    <img src="../../media/img/2014-Web-Design-Trends-Wevio-1110x550.jpg">
+                                    {#                            <div class="card-body">#}
+                                    {#                                <div class="text-center">#}
+                                    {#                                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"#}
+                                    {#                                         src="img/undraw_posting_photo.svg" alt="">#}
+                                    {#                                </div>#}
+                                    {#                                <p>Add some quality, svg illustrations to your project courtesy of <a#}
+                                    {#                                        target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a#}
+                                    {#                                    constantly updated collection of beautiful svg images that you can use#}
+                                    {#                                    completely free and without attribution!</p>#}
+                                    {#                                <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on#}
+                                    {#                                    unDraw &rarr;</a>#}
+                                    {#                            </div>#}
                                 </div>
 
+                                <!-- Approach -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">ThoughtWin</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>ThoughtWin is a renowned name in the website/mobile designing,
+                                            development in Software industry but – WHY? It’s because we make web design
+                                            and development that represents your business and spreads worldwide.
+                                            The support, trust and over and over recommendations by the client
+                                            is enough to describe the quality of work we offer.</p>
 
+                                    </div>
+                                </div>
 
-                            <div class="form-group col-md-4">
-                                {{ assign_from.submitDate }}
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <button class="btn-primary" type="submit">Assign</button>
-                            </div>
-
-                        </div>
-                    </form>
-
-
                 </div>
                 <!-- /.container-fluid -->
 

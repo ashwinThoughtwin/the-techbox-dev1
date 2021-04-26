@@ -247,16 +247,19 @@ class AssignTools(View):
                 messages.error(request, "Past date or time not allowed ")
                 return redirect('tools_issued')
             else:
-                assign_form.save()
-                issue = ToolsIssue.objects.latest('borrowTime')
-                subject = f'Hello {issue.empName.name}  your {issue.techTool.name}  Issued '
-                message = f'Hi  your techtool- {issue.techTool.name} has been Issued Please collect from office if you already ' \
-                          f'collect then skip this mail Have A Good !'
-                email_from = settings.EMAIL_HOST_USER
-                recipient_list = [issue.empName.email, ]
-                send_mail(subject, message, email_from, recipient_list)
-                messages.success(request, "tool are issued")
-                return redirect('tools_issued')
+                try:
+                    assign_form.save()
+                    issue = ToolsIssue.objects.latest('borrowTime')
+                    subject = f'Hello {issue.empName.name}  your {issue.techTool.name}  Issued '
+                    message = f'Hi  your techtool- {issue.techTool.name} has been Issued Please collect from office if you already ' \
+                              f'collect then skip this mail Have A Good !'
+                    email_from = settings.EMAIL_HOST_USER
+                    recipient_list = [issue.empName.email, ]
+                    send_mail(subject, message, email_from, recipient_list)
+                    messages.success(request, "tool are issued")
+                    return redirect('tools_issued')
+                except Exception as e:
+                    print(e)
 
         else:
             return HttpResponse("no tool issued")
