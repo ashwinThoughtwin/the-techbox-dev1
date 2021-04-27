@@ -1,6 +1,8 @@
 import pytz
 import datetime
 
+ist = pytz.timezone("Asia/Calcutta")
+
 from django.views import View
 from django.conf import settings
 from django.contrib import messages
@@ -12,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import EmployeeForm, TechToolForm, AssignToolForm
 
 from .models import *
-from apps.account.task import status_change
+from apps.dashboard.task import status_change, mail_to_timeover_employee, mailtoassignemployee, remind_to_employee
 
 
 class DashBoard(View):
@@ -109,6 +111,7 @@ class UpdateTechTools(View):
             status = request.POST.get('status')
             print(status)
             if status == 'on':
+                tool.name=request.POST.get('name')
                 tool.status = True
                 tool.save()
                 data['newtool'] = tool
@@ -116,6 +119,7 @@ class UpdateTechTools(View):
 
             else:
                 print(status)
+                tool.name=request.POST.get('name')
                 tool.status = False
                 tool.save()
                 data['newtool'] = tool
@@ -232,10 +236,18 @@ class AssignTools(View):
         assign_form = AssignToolForm(request.POST)
 
         if assign_form.is_valid():
+            emp = assign_form.cleaned_data['empName']
+            tool = assign_form.cleaned_data['techTool']
+            employee = Employee.objects.get(id=emp.id)
+            techtool = TechTool.objects.get(id=tool.id)
+
+
+            print(employee, techtool)
             t_id = request.POST.get('techTool')
             min_date = ist.localize(datetime.datetime.now())
             tool = TechTool.objects.get(id=t_id)
             submitdate = request.POST.get('submitDate')
+
             format_iso_now = min_date.isoformat()
 
             if (tool.status == False):
@@ -248,25 +260,36 @@ class AssignTools(View):
                 return redirect('tools_issued')
             else:
                 try:
+
                     assign_form.save()
-                    issue = ToolsIssue.objects.latest('borrowTime')
-                    subject = f'Hello {issue.empName.name}  your {issue.techTool.name}  Issued '
-                    message = f'Hi  your techtool- {issue.techTool.name} has been Issued Please collect from office if you already ' \
+                    subject = f'Hello {employee.name}  your {techtool.name}  Issued '
+                    message = f'Hi  your techtool- {techtool.name} has been Issued Please collect from office if you already ' \
                               f'collect then skip this mail Have A Good !'
-                    email_from = settings.EMAIL_HOST_USER
-                    recipient_list = [issue.empName.email, ]
-                    send_mail(subject, message, email_from, recipient_list)
+                    recipient_list = [employee.email, ]
+                    mailtoassignemployee.delay(subject, message, recipient_list)
+
                     messages.success(request, "tool are issued")
+
                     return redirect('tools_issued')
                 except Exception as e:
                     print(e)
-
+                finally:
+                    remind_to_employee.apply_async(countdown=60)
+                    bdate= ToolsIssue.objects.latest('borrowTime')
+                    a=bdate.borrowTime
+                    b=bdate.submitDate
+                    c= (b - a).total_seconds()
+                    print(c)
+                    subject = f'Hello {employee.name} time over'
+                    message = f'Hi your techtool- {techtool.name} Usage Time is Expired Please Submit {techtool.name}  ' \
+                              f'in office if you already Submit then skip this mail Have A Good !'
+                    recipient_list = [employee.email, ]
+                    mail_to_timeover_employee.apply_async((subject, message, recipient_list), countdown=c)
         else:
             return HttpResponse("no tool issued")
 
     def get(self, request):
         assign_from = AssignToolForm
-
         return render(request, 'dashboard/assign-tool.html', {'assign_from': assign_from})
 
 

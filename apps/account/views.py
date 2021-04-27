@@ -3,10 +3,6 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from django.contrib import messages
-from .task import mail_to_timeover_employee, shared_task
-
-from django.conf import settings
-from apps.dashboard.models import ToolsIssue
 
 
 class Login(View):
@@ -38,15 +34,3 @@ class Logout(View):
         logout(request)
         return redirect("login")
 
-
-def sendmailtotmp(request):
-    issue = ToolsIssue.objects.all()
-    for emp in issue:
-        subject = f'Hello {emp.empName.name} time over'
-        message = f'Hi your techtool- {emp.techTool.name} Usage Time is Expired Please Submit {emp.techTool.name} if ' \
-                  f'in office you already Submit then skip this mail Have A Good !'
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [emp.empName.email, ]
-
-        mail_to_timeover_employee.delay(subject, message, email_from, recipient_list)
-    return HttpResponse("mail sended ")

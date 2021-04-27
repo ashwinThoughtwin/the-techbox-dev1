@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import views_api
 
 urlpatterns = [
     path('dashboard/', views.DashBoard.as_view(), name='dashboard'),
@@ -17,5 +18,10 @@ urlpatterns = [
 
     path('assign-tool/', views.AssignTools.as_view(), name='assign_tool'),
     path('tool-issue/', views.ToolIssued.as_view(), name='tools_issued'),
+
+    # urls for api
+    path('toollist-api/', views_api.TechToolListApi.as_view(), name="techtoollist_api"),
+    path('tooldetail-api/<int:pk>/', views_api.TechToolDetailApi.as_view(), name="tooldetail_api"),
+    path('assign-api/', views_api.AssignToolApi.as_view(), name="assign_api"),
 
 ]

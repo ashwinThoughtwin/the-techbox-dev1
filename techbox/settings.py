@@ -13,6 +13,22 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://0a75ceeda2fe40839e5b1baef296b282@o585850.ingest.sentry.io/5737904",
+    integrations=[DjangoIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
@@ -48,6 +64,7 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'phone_field',
     'django_celery_results',
+    'rest_framework',
 
 ]
 CELERY_RESULT_BACKEND = 'django-db'
@@ -60,6 +77,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 ROOT_URLCONF = 'techbox.urls'
 
@@ -143,4 +164,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "chandrashekhar.thoughtwin@gmail.com"
-EMAIL_HOST_PASSWORD = "guddu8969"
+EMAIL_HOST_PASSWORD = ""
+
