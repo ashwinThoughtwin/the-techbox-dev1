@@ -10,7 +10,6 @@ class Login(View):
     def post(self, request):
         username = request.POST.get("username")
         password = request.POST.get("password")
-        print(request.POST)
         user = authenticate(
             username=username, password=password)
 

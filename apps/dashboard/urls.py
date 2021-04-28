@@ -22,6 +22,9 @@ urlpatterns = [
     # urls for api
     path('toollist-api/', views_api.TechToolListApi.as_view(), name="techtoollist_api"),
     path('tooldetail-api/<int:pk>/', views_api.TechToolDetailApi.as_view(), name="tooldetail_api"),
-    path('assign-api/', views_api.AssignToolApi.as_view(), name="assign_api"),
+    path('assign-list-api/', views_api.AssignToolListApi.as_view(), name="assign_list_api"),
+    path('assign-create-api/', views_api.AssignToolCreateApi.as_view(), name="assign_create_api"),
+
+
 
 ]

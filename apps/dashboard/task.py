@@ -49,13 +49,8 @@ def mail_to_timeover_employee(subject,message,recipient_list):
 def remind_to_employee():
     issue = ToolsIssue.objects.filter(timeOut=False)
 
-    today = ist.localize(datetime.datetime.now())
-    DD = datetime.timedelta(days=90)
-    earlier = today - DD
-    earlier_str = earlier.strftime("%Y%m%d")
-    print(earlier_str)
     for emp in issue:
-        subject = f'Hello {emp.empName.name} time over'
+        subject = f'Hello reminder for {emp.techTool.name}'
         message = f'Hi your techtool- {emp.techTool.name} Usage time is complete ' \
                   f'within few days  Please Submit {emp.techTool.name} in office before you ' \
                   f' time is over if you already Submit then skip this mail Have A Good ! {today} day'

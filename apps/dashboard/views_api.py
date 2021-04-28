@@ -1,11 +1,17 @@
-from .serializers import ToolSerializers,AssignToolSerializers
-from .models import TechTool,ToolsIssue
+from rest_framework.exceptions import ValidationError
+
+from .serializers import ToolSerializers, AssignToolSerializers
+from .models import TechTool, ToolsIssue
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
 
 
 class TechToolListApi(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, format=None):
         techtools = TechTool.objects.all()
         serializer = ToolSerializers(techtools, many=True)
@@ -13,10 +19,12 @@ class TechToolListApi(APIView):
 
     def post(self, request, formar=None):
         serializer = ToolSerializers(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class TechToolDetailApi(APIView):
 
@@ -36,7 +44,7 @@ class TechToolDetailApi(APIView):
         serializer = ToolSerializers(techtool, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
@@ -45,20 +53,11 @@ class TechToolDetailApi(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AssignToolApi(APIView):
-
-    def get(self, request):
-        assignlist = ToolsIssue.objects.all()
-        serializer = AssignToolSerializers(assignlist, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = AssignToolSerializers(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class AssignToolListApi(generics.ListAPIView):
+    queryset = ToolsIssue.objects.all()
+    serializer_class = AssignToolSerializers
 
 
-
-
+class AssignToolCreateApi(generics.CreateAPIView):
+    queryset = ToolsIssue.objects.all()
+    serializer_class = AssignToolSerializers

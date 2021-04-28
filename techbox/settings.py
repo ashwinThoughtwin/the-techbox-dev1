@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'phone_field',
     'django_celery_results',
     'rest_framework',
+    'rest_framework.authtoken',
 
 ]
 CELERY_RESULT_BACKEND = 'django-db'
@@ -78,8 +79,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 ROOT_URLCONF = 'techbox.urls'
