@@ -29,6 +29,7 @@ urlpatterns = [
     path('', include('apps.account.urls')),
     path('sentry-debug/', trigger_error),
     path('api-token-auth/', views.obtain_auth_token),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
 
 

@@ -15,7 +15,7 @@ class TechToolListApi(APIView):
     def get(self, request, format=None):
         techtools = TechTool.objects.all()
         serializer = ToolSerializers(techtools, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data,status.HTTP_200_OK)
 
     def post(self, request, formar=None):
         serializer = ToolSerializers(data=request.data)
@@ -27,7 +27,7 @@ class TechToolListApi(APIView):
 
 
 class TechToolDetailApi(APIView):
-
+    permission_classes = (permissions.IsAuthenticated,)
     def get_object(self, pk):
         try:
             return TechTool.objects.get(pk=pk)
@@ -35,9 +35,12 @@ class TechToolDetailApi(APIView):
             raise status.HTTP_404_NOT_FOUND
 
     def get(self, request, pk, format=None):
+
         techtool = self.get_object(pk)
         serializer = ToolSerializers(techtool)
         return Response(serializer.data)
+
+
 
     def put(self, request, pk, format=None):
         techtool = self.get_object(pk)

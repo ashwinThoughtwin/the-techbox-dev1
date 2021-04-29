@@ -80,7 +80,8 @@ MIDDLEWARE = [
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',  # enables simple command line authentication
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
@@ -168,4 +169,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "chandrashekhar.thoughtwin@gmail.com"
 EMAIL_HOST_PASSWORD = ""
+
 

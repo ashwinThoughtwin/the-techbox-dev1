@@ -13,7 +13,7 @@ DESIGNATION = (
 
 
 class TechTool(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
+    name = models.CharField(max_length=200)
     status = models.BooleanField(default=True, blank=True, null=True)
 
     def __str__(self):
@@ -22,7 +22,7 @@ class TechTool(models.Model):
 
 class Employee(models.Model):
     name = models.CharField(max_length=100)
-    image = models.FileField(default='img/undraw_profile.svg',upload_to='img/')
+    image = models.FileField(default='img/undraw_profile.svg',upload_to='img/',blank=True,null=True)
     designation = models.CharField(choices=DESIGNATION, max_length=100)
     address = models.CharField(max_length=150)
     mobile = PhoneField(blank=True, help_text='Contact mobile number')
