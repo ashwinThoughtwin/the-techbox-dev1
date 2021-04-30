@@ -65,22 +65,35 @@ class ToolDetailAPIViewTestCase(APITestCase):
     #     self.assertEqual(404, response.status_code)
 
     def test05_tool_update(self):
-        response = self.client.put(self.url, {"name": "phone", 'status': True})
-        response = json.loads(response.content)
+        response1 = self.client.put(self.url, {"name": "phone", 'status': True})
+        response = json.loads(response1.content)
         tool = TechTool.objects.get(id=self.tool.id)
-        self.assertEqual(response.get("name"), tool.name)
+        # self.assertEqual(response.get("name"), tool.name)
+        self.assertEqual(response1.status_code,200)
+
+    def test05_tool_update_fail(self):
+        response1 = self.client.put(self.url, {"names": "phone", 'status': True})
+
+        self.assertEqual(response1.status_code, 400)
 
     def test06_tool__delete(self):
         response = self.client.delete(self.url)
         self.assertEqual(204, response.status_code)
         print("for tool delete",response.status_code)
 
+    # def test06_tool__delete_fail(self):
+    #     response = self.client.delete(self.url2)
+    #     self.assertEqual(404, response.status_code)
+    #     print("for tool delete",response.status_code)
+    #
+
+
+
 
 
 class AssignListCreateAPIViewTestCase(APITestCase):
     url = reverse("assign_create_api")
 
-    #
     def setUp(self):
         self.emp = Employee.objects.create(name="demo", designation='Team Leader', address='demo', mobile=97654323,
                                            email="emdfg@gmail.com", date_of_birth="1997-03-08")

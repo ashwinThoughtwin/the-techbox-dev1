@@ -3,6 +3,8 @@ import datetime
 from django.db import models
 from phone_field import PhoneField
 
+
+
 # Create your models here.
 DESIGNATION = (
     ('1', ' team leader'),
@@ -22,7 +24,7 @@ class TechTool(models.Model):
 
 class Employee(models.Model):
     name = models.CharField(max_length=100)
-    image = models.FileField(default='img/undraw_profile.svg',upload_to='img/',blank=True,null=True)
+    image = models.FileField(default='img/undraw_profile.svg', upload_to='img/', blank=True, null=True)
     designation = models.CharField(choices=DESIGNATION, max_length=100)
     address = models.CharField(max_length=150)
     mobile = PhoneField(blank=True, help_text='Contact mobile number')
@@ -42,3 +44,7 @@ class ToolsIssue(models.Model):
 
     def __str__(self):
         return self.techTool.name
+
+
+
+

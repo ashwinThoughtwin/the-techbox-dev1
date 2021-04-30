@@ -74,8 +74,10 @@ class AddTechTools(View):
         print(request.POST)
         add_too_form = TechToolForm(request.POST)
         if add_too_form.is_valid():
+            tool = add_too_form.cleaned_data['name']
+
             add_too_form.save()
-            newtool = TechTool.objects.get(name=request.POST.get('name'))
+            newtool = TechTool.objects.last()
             print(newtool.id)
             data['newtool'] = newtool
 

@@ -1,0 +1,50 @@
+[
+{
+    "model": "dashboard.techtool",
+    "pk": 195,
+    "fields": {
+        "name": "pen",
+        "status": false
+    }
+},
+{
+    "model": "dashboard.techtool",
+    "pk": 196,
+    "fields": {
+        "name": "speaker",
+        "status": true
+    }
+},
+{
+    "model": "dashboard.techtool",
+    "pk": 197,
+    "fields": {
+        "name": "radio",
+        "status": false
+    }
+},
+{
+    "model": "dashboard.techtool",
+    "pk": 198,
+    "fields": {
+        "name": "alexa",
+        "status": true
+    }
+},
+{
+    "model": "dashboard.techtool",
+    "pk": 199,
+    "fields": {
+        "name": "usb cable",
+        "status": true
+    }
+},
+{
+    "model": "dashboard.techtool",
+    "pk": 200,
+    "fields": {
+        "name": "charger",
+        "status": true
+    }
+}
+]

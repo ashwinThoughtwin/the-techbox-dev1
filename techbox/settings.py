@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.dashboard',
+    'apps.dashboard.apps.DashboardConfig',
     'phone_field',
     'django_celery_results',
     'rest_framework',

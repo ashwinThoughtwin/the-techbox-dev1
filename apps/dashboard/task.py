@@ -11,7 +11,7 @@ ist = pytz.timezone("Asia/Calcutta")
 
 
 @shared_task()
-def mailtoassignemployee(subject,message,recipient_list):
+def mailtoassignemployee(subject, message, recipient_list):
     try:
         email_from = settings.EMAIL_HOST_USER
         send_mail(subject, message, email_from, recipient_list)
@@ -26,7 +26,6 @@ def status_change():
     x = ist.localize(datetime.datetime.now())
     issue = ToolsIssue.objects.all()
 
-
     for data in issue:
         if data.submitDate < x:
             data.timeOut = True
@@ -36,7 +35,7 @@ def status_change():
 
 
 @shared_task()
-def mail_to_timeover_employee(subject,message,recipient_list):
+def mail_to_timeover_employee(subject, message, recipient_list):
     try:
         email_from = settings.EMAIL_HOST_USER
         send_mail(subject, message, email_from, recipient_list, fail_silently=False, )
@@ -59,3 +58,11 @@ def remind_to_employee():
         send_mail(subject, message, email_from, recipient_list, fail_silently=False, )
 
     return "reminder mail successfully  "
+
+@shared_task()
+def send_mail_after_create_techtool(subject, message, recipient_list):
+    email_from = settings.EMAIL_HOST_USER
+
+    send_mail(subject, message, email_from, recipient_list)
+
+    return "create item successfully "
