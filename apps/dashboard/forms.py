@@ -16,7 +16,8 @@ class EmployeeForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={
         'class': "form-control",
         'placeholder': 'Employee Name',
-        'id': "emp-name"
+        'id': "emp-name",
+
     }))
     image = forms.FileField(widget=forms.FileInput(attrs={
         'class': "form-control",
@@ -44,6 +45,7 @@ class EmployeeForm(forms.ModelForm):
         'class': "form-control",
         'placeholder': 'Employee Email',
         'id': "emp-email"
+
     }))
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={
         'class': "form-control",

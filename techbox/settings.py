@@ -15,6 +15,8 @@ import os
 from django.contrib.messages import constants as messages
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+import django_heroku
+
 
 sentry_sdk.init(
     dsn="https://0a75ceeda2fe40839e5b1baef296b282@o585850.ingest.sentry.io/5737904",
@@ -147,7 +149,6 @@ USE_L10N = True
 USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_URL = '/static/'
 
 # Add static file directory
@@ -169,5 +170,12 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "chandrashekhar.thoughtwin@gmail.com"
 EMAIL_HOST_PASSWORD = ""
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 

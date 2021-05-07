@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .forms import EmployeeForm, TechToolForm, AssignToolForm
@@ -113,7 +113,7 @@ class UpdateTechTools(View):
             status = request.POST.get('status')
             print(status)
             if status == 'on':
-                tool.name=request.POST.get('name')
+                tool.name = request.POST.get('name')
                 tool.status = True
                 tool.save()
                 data['newtool'] = tool
@@ -121,7 +121,7 @@ class UpdateTechTools(View):
 
             else:
                 print(status)
-                tool.name=request.POST.get('name')
+                tool.name = request.POST.get('name')
                 tool.status = False
                 tool.save()
                 data['newtool'] = tool
@@ -161,17 +161,17 @@ class AddEmployees(View):
         try:
             data = {}
             emp_form = EmployeeForm(request.POST, request.FILES)
-            print(request.POST),
-            print(request.FILES)
             if emp_form.is_valid():
                 emp_form.save()
                 messages.success(request, 'Employee Add Successfully ')
-                newemp = Employee.objects.get(name=request.POST.get('name'))
+                newemp = Employee.objects.last()
+                print(newemp.id)
                 data['newemp'] = newemp
 
                 return render(request, 'dashboard/newempdata.html', data)
             else:
-                return HttpResponse("not valid")
+                messages.error(request, "please fill correct details")
+                return redirect('employee_list')
 
         except Exception as e:
             print(e)
@@ -229,7 +229,7 @@ class EmployeeDelete(View):
         employee.delete()
         messages.success(request, 'Employee Delete Successfully ')
 
-        return redirect('employee_list')
+        return redirect(reverse('employee_list'))
 
 
 class AssignTools(View):
@@ -242,7 +242,6 @@ class AssignTools(View):
             tool = assign_form.cleaned_data['techTool']
             employee = Employee.objects.get(id=emp.id)
             techtool = TechTool.objects.get(id=tool.id)
-
 
             print(employee, techtool)
             t_id = request.POST.get('techTool')
@@ -277,10 +276,10 @@ class AssignTools(View):
                     print(e)
                 finally:
                     remind_to_employee.apply_async(countdown=60)
-                    bdate= ToolsIssue.objects.latest('borrowTime')
-                    a=bdate.borrowTime
-                    b=bdate.submitDate
-                    c= (b - a).total_seconds()
+                    bdate = ToolsIssue.objects.latest('borrowTime')
+                    a = bdate.borrowTime
+                    b = bdate.submitDate
+                    c = (b - a).total_seconds()
                     print(c)
                     subject = f'Hello {employee.name} time over'
                     message = f'Hi your techtool- {techtool.name} Usage Time is Expired Please Submit {techtool.name}  ' \

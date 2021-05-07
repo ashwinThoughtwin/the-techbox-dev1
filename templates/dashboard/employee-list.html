@@ -337,6 +337,7 @@
                     formData.append("date_of_birth", $('#emp-dob').val());
                     formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
+
                     $.ajax({
                         type: 'POST',
                         url: "{% url 'add_employee' %}",
@@ -344,9 +345,11 @@
                         cache: false,
                         processData: false,
                         contentType: false,
-                        success: function (data) {
-                            $('.empdata').append(data);
-                            $('#newempdata').modal('hide');
+                        success: function (response) {
+                                  $('.empdata').append(response);
+                                   $('#newempdata').modal('hide');
+                            location.reload();
+
                         },
                     });
                 });
@@ -371,7 +374,8 @@
                         $(obj).closest("tr").remove();
                         alert("Employee remove successfully ")
 
-                        $('empModal' + id).modal('hide')
+                        $('#empModal'+id).modal('hide')
+
                         location.reload();
                     },
                 });
